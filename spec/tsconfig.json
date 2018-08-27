@@ -11,7 +11,6 @@
     "lib": ["es2015", "dom"]
   },
   "include": [
-    "../lib/typings/*.d.ts",
     "../lib/index.ts",
     "./bootstrap_spec.ts"
   ]

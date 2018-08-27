@@ -1,28 +1,31 @@
-import { HubotModuleDefinition, HubotModuleTypeConfig, HubotFrameworkRobot } from './model';
+import { HubotModuleTypeConfig, HubotFrameworkRobot } from './model';
 import { ReflectiveInjector, Type, Provider } from 'injection-js';
 import { Robot } from 'hubot';
 import { BRAIN, ROBOT } from './injection-tokens';
 
-export function bootstrapModule(rootModule: Type<HubotModuleDefinition>) {
-    return (rb: Robot) => {
+export function bootstrapModule(rootModule: Type<any>) {
+    return <TAdapter>(rb: Robot<TAdapter>) => {
 
-        const robot = rb as HubotFrameworkRobot;
+        const robot = rb as HubotFrameworkRobot<TAdapter>;
         const injector = createInjectorForRobot(robot, rootModule);
         robot.injector = injector;
 
-        const doBootstrap = (def: Type<HubotModuleDefinition>) => {
+        const doBootstrap = (moduleDefinition: Type<any>) => {
 
-            const moduleConfig = getModuleTypeConfig(def);
+            const moduleConfig = getModuleTypeConfig(moduleDefinition);
             if (moduleConfig.imports && moduleConfig.imports.length) {
                 for (const childModule of moduleConfig.imports) {
                     doBootstrap(childModule);
                 }
             }
 
-            const mod = injector.get(def) as HubotModuleDefinition;
-            if (mod.run && typeof mod.run === 'function') {
-                robot.logger.info(`Bootstrapping: ${def.name}`);
-                mod.run(robot);
+            try {
+                robot.logger.info(`Instantiating ${moduleDefinition.name}`);
+                injector.get(moduleDefinition);
+            } catch (error) {
+                robot.logger.error(`Failed instantiation of module ${moduleDefinition.name}`);
+                robot.logger.error(error);
+                throw error;
             }
         };
 
@@ -30,7 +33,9 @@ export function bootstrapModule(rootModule: Type<HubotModuleDefinition>) {
     };
 }
 
-function createInjectorForRobot(robot: Robot, rootModule: Type<HubotModuleDefinition>) {
+function createInjectorForRobot<TAdapter>(
+    robot: HubotFrameworkRobot<TAdapter>,
+    rootModule: Type<any>) {
 
     const providers = [{
         provide: ROBOT,
@@ -45,7 +50,8 @@ function createInjectorForRobot(robot: Robot, rootModule: Type<HubotModuleDefini
     return createInjectorForModule(rootModule, providers);
 }
 
-function createInjectorForModule(rootModule: Type<HubotModuleDefinition>,
+function createInjectorForModule(
+    rootModule: Type<any>,
     providers: Provider[]) {
 
     // Get all providers from modules.
@@ -65,11 +71,11 @@ function createInjectorForModule(rootModule: Type<HubotModuleDefinition>,
     return ReflectiveInjector.resolveAndCreate(providers);
 }
 
-function traverseModules(root: Type<HubotModuleDefinition>) {
+function traverseModules(root: Type<any>) {
 
     const output: HubotModuleTypeConfig[] = [];
 
-    const traverse = (module: Type<HubotModuleDefinition>) => {
+    const traverse = (module: Type<any>) => {
         const config = getModuleTypeConfig(module);
         if (config.imports) {
             for (const childModule of config.imports) {
@@ -85,7 +91,7 @@ function traverseModules(root: Type<HubotModuleDefinition>) {
     return output;
 }
 
-function getModuleTypeConfig(mod: Type<HubotModuleDefinition>) {
+function getModuleTypeConfig(mod: Type<any>) {
     const configType = mod as HubotModuleTypeConfig;
 
     if (!configType.hubotModuleConfig) {

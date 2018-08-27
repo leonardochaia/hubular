@@ -1,7 +1,5 @@
-import { Robot } from 'hubot';
-import { Injector } from 'injection-js';
+import { HubotFrameworkRobot } from './model';
 
-export function reloadInjector(robot: Robot) {
-    const robotWithInjector = robot as Robot & { injector: Injector };
-    delete robotWithInjector.injector;
+export function reloadInjector(robot: HubotFrameworkRobot) {
+    delete robot.injector;
 }

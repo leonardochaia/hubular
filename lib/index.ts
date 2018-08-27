@@ -1,4 +1,4 @@
-export { HubotModuleConfiguration, HubotModuleDefinition } from './src/model';
+export { HubotModuleConfiguration, HubotFrameworkRobot } from './src/model';
 export { bootstrapModule } from './src/bootstrap';
 export { HubotModule } from './src/hubot-module.decorator';
 

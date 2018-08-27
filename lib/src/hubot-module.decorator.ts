@@ -1,12 +1,8 @@
 import { Type } from 'injection-js';
-import {
-    HubotModuleConfiguration,
-    HubotModuleDefinition,
-    HubotModuleTypeConfig
-} from './model';
+import { HubotModuleConfiguration, HubotModuleTypeConfig } from './model';
 
 export function HubotModule(config?: HubotModuleConfiguration) {
-    return (target: Type<HubotModuleDefinition>) => {
+    return (target: Type<any>) => {
 
         const typeConfig = target as HubotModuleTypeConfig;
         typeConfig.hubotModuleConfig = config || { providers: [] };

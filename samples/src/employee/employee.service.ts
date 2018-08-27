@@ -6,7 +6,7 @@ import { BRAIN } from '../../../dist';
 @Injectable()
 export class EmployeeService {
 
-    protected readonly employees: EmployeeInfo[] = [{ userId: 'a7d2', username: 'Penn' }];
+    protected readonly employees: EmployeeInfo[] = [{ userId: 'a7d2', username: 'Penny' }];
 
     constructor(
         @Inject(BRAIN)

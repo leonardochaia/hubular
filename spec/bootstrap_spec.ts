@@ -1,8 +1,8 @@
 // tslint:disable:max-classes-per-file
 import 'reflect-metadata';
 
-import { bootstrapModule, HubotModule, HubotModuleDefinition, ROBOT, BRAIN } from '../lib';
-import { Injector, Injectable, InjectionToken } from 'injection-js';
+import { bootstrapModule, HubotModule, ROBOT, BRAIN } from '../lib';
+import { Injector, Injectable, InjectionToken, Inject } from 'injection-js';
 import { HubotFrameworkRobot } from '../lib/src/model';
 
 function createRobot() {
@@ -19,7 +19,7 @@ describe('Bootstrapping', () => {
         const robot = createRobot();
 
         @HubotModule()
-        class RootModule implements HubotModuleDefinition { }
+        class RootModule { }
 
         const fn = bootstrapModule(RootModule);
 
@@ -33,7 +33,7 @@ describe('Bootstrapping', () => {
         const robot = createRobot();
 
         @HubotModule()
-        class RootModule implements HubotModuleDefinition { }
+        class RootModule { }
 
         const fn = bootstrapModule(RootModule);
 
@@ -63,7 +63,7 @@ describe('Bootstrapping', () => {
                 }
             ]
         })
-        class RootModule implements HubotModuleDefinition { }
+        class RootModule { }
 
         const fn = bootstrapModule(RootModule);
 
@@ -96,7 +96,7 @@ describe('Bootstrapping', () => {
                 ChildModule
             ]
         })
-        class RootModule implements HubotModuleDefinition { }
+        class RootModule { }
 
         const fn = bootstrapModule(RootModule);
 
@@ -106,14 +106,15 @@ describe('Bootstrapping', () => {
         expect(robot.injector.get(valueToken)).toBe(128);
     });
 
-    it('should execute modules run', () => {
-
-        const robot = createRobot();
+    it('should instantiate modules using the injector', () => {
 
         @HubotModule()
-        class ChildModule implements HubotModuleDefinition {
+        class ChildModule {
 
-            public run(rb: HubotFrameworkRobot) {
+            constructor(
+                @Inject(ROBOT)
+                rb: HubotFrameworkRobot
+            ) {
                 rb.brain.set('child', true);
             }
         }
@@ -123,15 +124,19 @@ describe('Bootstrapping', () => {
                 ChildModule
             ]
         })
-        class RootModule implements HubotModuleDefinition {
+        class RootModule {
 
-            public run(rb) {
+            constructor(
+                @Inject(ROBOT)
+                rb: HubotFrameworkRobot
+            ) {
                 rb.brain.set('root', true);
             }
         }
 
         const fn = bootstrapModule(RootModule);
 
+        const robot = createRobot();
         fn(robot);
 
         expect(robot.brain.get('root')).toBeTruthy();

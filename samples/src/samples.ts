@@ -6,7 +6,7 @@
 
 import 'reflect-metadata';
 
-import { HubotModule, HubotModuleDefinition, bootstrapModule } from '../../dist';
+import { HubotModule, bootstrapModule } from '../../dist';
 import { EmployeeModule } from './employee';
 
 @HubotModule({
@@ -14,7 +14,7 @@ import { EmployeeModule } from './employee';
         EmployeeModule,
     ],
 })
-class SamplesModule implements HubotModuleDefinition { }
+class SamplesModule { }
 
 // Required only for the root module
 export = bootstrapModule(SamplesModule);

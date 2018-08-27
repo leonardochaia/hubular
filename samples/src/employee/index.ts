@@ -1,24 +1,30 @@
-import { Robot } from 'hubot';
 import { EmployeeService } from './employee.service';
-import { HubotModule, HubotModuleDefinition } from '../../../dist';
+import { HubotModule, HubotFrameworkRobot, ROBOT } from '../../../dist';
+import { Inject } from 'injection-js';
 
 @HubotModule({
     providers: [
         EmployeeService
     ]
 })
-export class EmployeeModule implements HubotModuleDefinition {
+export class EmployeeModule {
 
-    constructor(private employee: EmployeeService) { }
+    constructor(
+        private employee: EmployeeService,
+        @Inject(ROBOT)
+        private robot: HubotFrameworkRobot) {
 
-    public run(robot: Robot) {
+        this.bindToRobot();
+    }
 
-        robot.respond(/employees$/, (res) => {
+    protected bindToRobot() {
+
+        this.robot.respond(/employees$/, (res) => {
             res.send(`${this.employee.getAll().length} employees registered.`,
                 this.employee.getAll().map(e => `${e.username}`).join(','));
         });
 
-        robot.respond(/register employee (.*)/, (res) => {
+        this.robot.respond(/register employee (.*)/, (res) => {
             const name = res.match[1];
             this.employee.register({
                 userId: new Date().toJSON(),
