@@ -10,7 +10,8 @@
     "trailing-comma": false,
     "arrow-parens": false,
     "interface-name": false,
-    "array-type": false
+    "array-type": false,
+    "align": false
   },
   "rulesDirectory": []
 }
