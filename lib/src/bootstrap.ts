@@ -1,12 +1,14 @@
-import { HubotModuleDefinition, HubotModuleTypeConfig } from './model';
-import { ReflectiveInjector, Type } from 'injection-js';
+import { HubotModuleDefinition, HubotModuleTypeConfig, HubotFrameworkRobot } from './model';
+import { ReflectiveInjector, Type, Provider } from 'injection-js';
 import { Robot } from 'hubot';
 import { BRAIN, ROBOT } from './injection-tokens';
 
 export function bootstrapModule(rootModule: Type<HubotModuleDefinition>) {
-    return (robot: Robot) => {
+    return (rb: Robot) => {
 
-        const injector = getInjectorForRobot(robot, rootModule);
+        const robot = rb as HubotFrameworkRobot;
+        const injector = createInjectorForRobot(robot, rootModule);
+        robot.injector = injector;
 
         const doBootstrap = (def: Type<HubotModuleDefinition>) => {
 
@@ -25,43 +27,42 @@ export function bootstrapModule(rootModule: Type<HubotModuleDefinition>) {
         };
 
         doBootstrap(rootModule);
-
     };
 }
 
-function getInjectorForRobot(robot: Robot, rootModule: Type<HubotModuleDefinition>) {
+function createInjectorForRobot(robot: Robot, rootModule: Type<HubotModuleDefinition>) {
 
-    const robotWithInjector = robot as Robot & { injector: ReflectiveInjector };
-
-    if (!robotWithInjector.injector) {
-        const modules = traverseModules(rootModule);
-        const providers = modules
-
-            // Flattern providers
-            .map(m => m.hubotModuleConfig.providers)
-            .reduce((a, b) => [...a, ...b], [])
-
-            // Add modules to the injector too
-            .concat(modules)
-            .filter(m => !!m);
-
-        providers.push(
-            {
-                provide: ROBOT,
-                useValue: robot
-            },
-            {
-                provide: BRAIN,
-                useValue: robot.brain
-            }
-        );
-
-        robot.logger.info(`Creating Injector for: [${modules.map(m => m.name)}]`);
-
-        robotWithInjector.injector = ReflectiveInjector.resolveAndCreate(providers);
+    const providers = [{
+        provide: ROBOT,
+        useValue: robot
+    },
+    {
+        provide: BRAIN,
+        useValue: robot.brain
     }
+    ];
 
-    return robotWithInjector.injector;
+    return createInjectorForModule(rootModule, providers);
+}
+
+function createInjectorForModule(rootModule: Type<HubotModuleDefinition>,
+    providers: Provider[]) {
+
+    // Get all providers from modules.
+    const modules = traverseModules(rootModule);
+    const moduleProviders = modules
+        // Flattern providers.
+        .map(m => m.hubotModuleConfig.providers)
+        .reduce((a, b) => [...a, ...b], [])
+
+        // Add modules to the injector too.
+        .concat(modules);
+
+    providers = (providers || [])
+        .concat(moduleProviders)
+        .filter(m => !!m);
+
+    return ReflectiveInjector.resolveAndCreate(providers);
 }
 
 function traverseModules(root: Type<HubotModuleDefinition>) {

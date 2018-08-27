@@ -1,4 +1,4 @@
-import { Provider, Type } from 'injection-js';
+import { Provider, Type, Injector } from 'injection-js';
 import { Robot } from 'hubot';
 
 export interface HubotModuleConfiguration {
@@ -7,10 +7,14 @@ export interface HubotModuleConfiguration {
 }
 
 export interface HubotModuleDefinition {
-    run?(robot: Robot): void;
+    run?(robot: HubotFrameworkRobot): void;
 }
 
 export interface HubotModuleTypeConfig extends Type<HubotModuleDefinition> {
     hubotModuleConfig: HubotModuleConfiguration;
     name: string;
+}
+
+export interface HubotFrameworkRobot<TAdapter = any> extends Robot<TAdapter> {
+    injector: Injector;
 }
