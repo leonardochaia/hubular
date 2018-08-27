@@ -88,7 +88,7 @@ function traverseModules(root: Type<HubotModuleDefinition>) {
 function getModuleTypeConfig(mod: Type<HubotModuleDefinition>) {
     const configType = mod as HubotModuleTypeConfig;
 
-    if (!configType) {
+    if (!configType.hubotModuleConfig) {
         throw new Error(`Invalid module [${mod.name}]. Did you add the @HubotModule decorator?`);
     }
 

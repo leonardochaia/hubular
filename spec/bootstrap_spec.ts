@@ -137,4 +137,16 @@ describe('Bootstrapping', () => {
         expect(robot.brain.get('root')).toBeTruthy();
         expect(robot.brain.get('child')).toBeTruthy();
     });
+
+    it('should throw when invalid module', () => {
+
+        const robot = createRobot();
+
+        // Without @HubotModule()
+        class RootModule { }
+
+        const fn = bootstrapModule(RootModule);
+
+        expect(() => fn(robot)).toThrowError(`Invalid module [RootModule]. Did you add the @HubotModule decorator?`);
+    });
 });
