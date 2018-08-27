@@ -1,0 +1,19 @@
+{
+  "name": "samples",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Leonardo Chaia <lchaia@astonishinglab.com>",
+  "description": "A simple helpful robot for your Company",
+  "scripts": {
+    "build": "tsc",
+    "start": "bin/hubot"
+  },
+  "dependencies": {
+    "hubot": "^3.1.1",
+    "hubot-shell": "^1.0.2",
+    "reflect-metadata": "^0.1.12"
+  },
+  "engines": {
+    "node": "0.10.x"
+  }
+}

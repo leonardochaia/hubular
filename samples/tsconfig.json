@@ -1,0 +1,21 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./scripts",
+    "sourceMap": false,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    // "noImplicitAny": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "../src/typings"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+  }
+}
