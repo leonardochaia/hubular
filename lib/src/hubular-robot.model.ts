@@ -3,7 +3,6 @@ import { Injector } from 'injection-js';
 
 export interface HubularRobot<TAdapter = any> extends Robot<TAdapter> {
     injector: Injector;
-    readonly listeners: HubularRobotListener[];
     readonly brain: HubularRobotBrain;
 
     logger: {
@@ -11,11 +10,6 @@ export interface HubularRobot<TAdapter = any> extends Robot<TAdapter> {
         info(msg: string): void;
         error(msg: string): void;
     };
-}
-
-export interface HubularRobotListener {
-    readonly options: any;
-    callback(res: Hubot.Response<HubularRobot>): void;
 }
 
 export interface HubularRobotBrain extends Brain {
