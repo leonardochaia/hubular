@@ -1,16 +1,15 @@
 // tslint:disable:max-classes-per-file
 import 'reflect-metadata';
 
-import { bootstrapModule, HubotModule, ROBOT, BRAIN } from '../lib';
+import { bootstrapModule, HubotModule, ROBOT, BRAIN, HubularRobot } from '../lib';
 import { Injector, Injectable, InjectionToken, Inject } from 'injection-js';
-import { HubotFrameworkRobot } from '../lib/src/model';
 
 function createRobot() {
     return {
         brain: new Map<string, any>(),
         injector: Injector.NULL,
         logger: console,
-    } as any as HubotFrameworkRobot;
+    } as any as HubularRobot;
 }
 
 export default describe('Bootstrapping', () => {
@@ -113,7 +112,7 @@ export default describe('Bootstrapping', () => {
 
             constructor(
                 @Inject(ROBOT)
-                rb: HubotFrameworkRobot
+                rb: HubularRobot
             ) {
                 rb.brain.set('child', true);
             }
@@ -128,7 +127,7 @@ export default describe('Bootstrapping', () => {
 
             constructor(
                 @Inject(ROBOT)
-                rb: HubotFrameworkRobot
+                rb: HubularRobot
             ) {
                 rb.brain.set('root', true);
             }

@@ -8,7 +8,7 @@
 // read more on injection-js docs.
 import 'reflect-metadata';
 
-import { bootstrapModule } from 'hubot-framework';
+import { bootstrapModule } from 'hubular';
 import { AppModule } from './app/app.module';
 
 // Required only for the root module

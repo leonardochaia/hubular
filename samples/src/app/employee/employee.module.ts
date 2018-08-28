@@ -1,5 +1,5 @@
 import { EmployeeService } from './employee.service';
-import { HubotModule, HubotFrameworkRobot, ROBOT } from 'hubot-framework';
+import { HubotModule, HubularRobot, ROBOT } from 'hubular';
 import { Inject } from 'injection-js';
 
 @HubotModule({
@@ -12,7 +12,7 @@ export class EmployeeModule {
     constructor(
         private employee: EmployeeService,
         @Inject(ROBOT)
-        private robot: HubotFrameworkRobot) {
+        private robot: HubularRobot) {
 
         this.bindToRobot();
     }

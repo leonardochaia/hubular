@@ -1,12 +1,13 @@
-import { HubotModuleTypeConfig, HubotFrameworkRobot } from './model';
+import { HubotModuleTypeConfig } from './model';
 import { ReflectiveInjector, Type, Provider } from 'injection-js';
 import { Robot } from 'hubot';
 import { BRAIN, ROBOT } from './injection-tokens';
+import { HubularRobot } from './hubular-robot.model';
 
 export function bootstrapModule(rootModule: Type<any>) {
     return <TAdapter>(rb: Robot<TAdapter>) => {
 
-        const robot = rb as HubotFrameworkRobot<TAdapter>;
+        const robot = rb as HubularRobot<TAdapter>;
         const injector = createInjectorForRobot(robot, rootModule);
         robot.injector = injector;
 
@@ -34,7 +35,7 @@ export function bootstrapModule(rootModule: Type<any>) {
 }
 
 function createInjectorForRobot<TAdapter>(
-    robot: HubotFrameworkRobot<TAdapter>,
+    robot: HubularRobot<TAdapter>,
     rootModule: Type<any>) {
 
     const providers = [{
