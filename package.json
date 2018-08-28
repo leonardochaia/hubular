@@ -17,9 +17,11 @@
     "build:test": "rimraf spec/dist && rollup -c rollup.config.js --environment BUILD:test",
     "test": "yarn build:test && jasmine"
   },
+  "peerDependencies": {
+    "hubot": "^3.1.1"
+  },
   "dependencies": {
     "@types/hubot": "^2.19.2",
-    "hubot": "^3.1.1",
     "injection-js": "^2.2.1"
   },
   "devDependencies": {
