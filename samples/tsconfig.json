@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./scripts",
+    "outDir": "./hubular-scripts",
     "sourceMap": false,
     "declaration": false,
     "moduleResolution": "node",

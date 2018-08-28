@@ -5,10 +5,10 @@
   "author": "Leonardo Chaia <lchaia@astonishinglab.com>",
   "description": "A simple helpful robot for your Company",
   "scripts": {
-    "prebuild": "rimraf scripts",
+    "prebuild": "rimraf hubular-scripts",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "start": "yarn build && bin/hubot"
+    "start": "yarn build && bin/hubot --require hubular-scripts"
   },
   "dependencies": {
     "@types/hubot": "^2.19.2",
