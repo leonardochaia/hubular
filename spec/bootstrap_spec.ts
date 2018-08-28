@@ -8,12 +8,12 @@ import { HubotFrameworkRobot } from '../lib/src/model';
 function createRobot() {
     return {
         brain: new Map<string, any>(),
-        injector: null as Injector,
+        injector: Injector.NULL,
         logger: console,
     } as any as HubotFrameworkRobot;
 }
 
-describe('Bootstrapping', () => {
+export default describe('Bootstrapping', () => {
     it('should create robot.injector', () => {
 
         const robot = createRobot();

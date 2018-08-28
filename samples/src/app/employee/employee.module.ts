@@ -1,5 +1,5 @@
 import { EmployeeService } from './employee.service';
-import { HubotModule, HubotFrameworkRobot, ROBOT } from '../../../dist';
+import { HubotModule, HubotFrameworkRobot, ROBOT } from 'hubot-framework';
 import { Inject } from 'injection-js';
 
 @HubotModule({

@@ -5,16 +5,14 @@
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "stripInternal": true,
     "declaration": true,
     "target": "es5",
-    // "noImplicitAny": true,
-    "lib": [
-      "es2017",
-      "dom"
-    ]
+    "moduleResolution": "node",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["es6"]
   },
   "include": [
-    "./lib/index.ts"
+    "./lib/"
   ]
 }

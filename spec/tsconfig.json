@@ -1,14 +1,16 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "outDir": "./dist",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "stripInternal": true,
     "declaration": true,
-    "outDir": "./dist",
-    "lib": ["es2015", "dom"]
+    "target": "es5",
+    "moduleResolution": "node",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["es6"]
   },
   "include": [
     "../lib/index.ts",

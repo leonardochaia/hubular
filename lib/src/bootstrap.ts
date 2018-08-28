@@ -58,7 +58,7 @@ function createInjectorForModule(
     const modules = traverseModules(rootModule);
     const moduleProviders = modules
         // Flattern providers.
-        .map(m => m.hubotModuleConfig.providers)
+        .map(m => m.hubotModuleConfig.providers || [])
         .reduce((a, b) => [...a, ...b], [])
 
         // Add modules to the injector too.

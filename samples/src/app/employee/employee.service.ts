@@ -1,7 +1,7 @@
 import { Brain } from 'hubot';
 import { EmployeeInfo } from './models';
 import { Injectable, Inject } from 'injection-js';
-import { BRAIN } from '../../../dist';
+import { BRAIN } from 'hubot-framework';
 
 @Injectable()
 export class EmployeeService {
