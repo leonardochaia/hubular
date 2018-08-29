@@ -1,7 +1,7 @@
 // tslint:disable:max-classes-per-file
 import 'reflect-metadata';
 
-import { bootstrapModule, HubotModule, ROBOT, BRAIN, HubularRobot } from '../lib';
+import { bootstrapModule, HubularModule, ROBOT, BRAIN, HubularRobot } from '../lib';
 import { Injector, Injectable, InjectionToken, Inject } from 'injection-js';
 
 function createRobot() {
@@ -17,7 +17,7 @@ export default describe('Bootstrapping', () => {
 
         const robot = createRobot();
 
-        @HubotModule()
+        @HubularModule()
         class RootModule { }
 
         const fn = bootstrapModule(RootModule);
@@ -31,7 +31,7 @@ export default describe('Bootstrapping', () => {
 
         const robot = createRobot();
 
-        @HubotModule()
+        @HubularModule()
         class RootModule { }
 
         const fn = bootstrapModule(RootModule);
@@ -53,7 +53,7 @@ export default describe('Bootstrapping', () => {
 
         const valueToken = new InjectionToken('VALUE_TOKEN');
 
-        @HubotModule({
+        @HubularModule({
             providers: [
                 FooService,
                 {
@@ -80,7 +80,7 @@ export default describe('Bootstrapping', () => {
 
         const valueToken = new InjectionToken('VALUE_TOKEN');
 
-        @HubotModule({
+        @HubularModule({
             providers: [
                 {
                     provide: valueToken,
@@ -90,7 +90,7 @@ export default describe('Bootstrapping', () => {
         })
         class ChildModule { }
 
-        @HubotModule({
+        @HubularModule({
             imports: [
                 ChildModule
             ]
@@ -107,7 +107,7 @@ export default describe('Bootstrapping', () => {
 
     it('should instantiate modules using the injector', () => {
 
-        @HubotModule()
+        @HubularModule()
         class ChildModule {
 
             constructor(
@@ -118,7 +118,7 @@ export default describe('Bootstrapping', () => {
             }
         }
 
-        @HubotModule({
+        @HubularModule({
             imports: [
                 ChildModule
             ]
@@ -146,11 +146,11 @@ export default describe('Bootstrapping', () => {
 
         const robot = createRobot();
 
-        // Without @HubotModule()
+        // Without @HubularModule()
         class RootModule { }
 
         const fn = bootstrapModule(RootModule);
 
-        expect(() => fn(robot)).toThrowError(`Invalid module [RootModule]. Did you add the @HubotModule decorator?`);
+        expect(() => fn(robot)).toThrowError(`Invalid module [RootModule]. Did you add the @HubularModule decorator?`);
     });
 });

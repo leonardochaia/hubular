@@ -3,6 +3,7 @@ import { Robot } from 'hubot';
 import { BRAIN, ROBOT } from './injection-tokens';
 import { HubularRobot } from './hubular-robot.model';
 import { HubotModuleConfiguration } from './model';
+import { HUBULAR_MODULE_TYPE_CONFIG } from './hubular-module.decorator';
 
 export function bootstrapModule(rootModule: Type<any>) {
     return <TAdapter>(rb: Robot<TAdapter>) => {
@@ -94,10 +95,10 @@ function traverseModules(root: Type<any>) {
 
 function getModuleTypeConfig(mod: Type<any>) {
 
-    const config = Reflect.get(mod, 'hubotModuleConfig');
+    const config = Reflect.get(mod, HUBULAR_MODULE_TYPE_CONFIG);
 
     if (!config) {
-        throw new Error(`Invalid module [${mod.name}]. Did you add the @HubotModule decorator?`);
+        throw new Error(`Invalid module [${mod.name}]. Did you add the @HubularModule decorator?`);
     }
 
     return config as HubotModuleConfiguration;
