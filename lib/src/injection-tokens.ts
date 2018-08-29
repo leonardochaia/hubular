@@ -1,6 +1,4 @@
-import { InjectionToken } from 'injection-js';
-import { Brain } from 'hubot';
-import { HubularRobot } from './hubular-robot.model';
+import { OpaqueToken } from 'injection-js';
 
-export const ROBOT = new InjectionToken<HubularRobot>('ROBOT');
-export const BRAIN = new InjectionToken<Brain>('BRAIN');
+export const ROBOT = new OpaqueToken('ROBOT');
+export const BRAIN = new OpaqueToken('BRAIN');
