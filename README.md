@@ -121,7 +121,7 @@ export class AppModule {
 You can use Yeoman to scaffold a brand new Hubular App:
 
 ```bash
-yarn add global generator-hubular
+yarn global add generator-hubular
 ```
 
 ```bash
