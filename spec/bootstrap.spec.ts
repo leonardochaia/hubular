@@ -3,23 +3,19 @@ import 'reflect-metadata';
 
 import { bootstrapModule, HubularModule, ROBOT, BRAIN, HubularRobot } from '../lib';
 import { Injector, Injectable, InjectionToken, Inject, Type } from 'injection-js';
+import { RobotMock } from './robot-mock';
 
-function createRobot() {
-    return {
-        brain: new Map<string, any>(),
-        injector: Injector.NULL,
-        logger: console,
-    } as any as HubularRobot;
-}
+let robotMock: RobotMock;
+let robot: HubularRobot;
 
-function bootstrapModuleWithMockRobot(rootModule: Type<any>) {
-    const robot = createRobot();
-    const fn = bootstrapModule(rootModule);
+beforeEach(() => {
+    robotMock = new RobotMock();
+    robot = robotMock.robot;
+});
 
-    fn(robot);
-
-    return robot;
-}
+afterEach(() => {
+    robotMock.dispose();
+});
 
 export default describe('Bootstrapping', () => {
     it('should create robot.injector', () => {
@@ -27,7 +23,7 @@ export default describe('Bootstrapping', () => {
         @HubularModule()
         class AppModule { }
 
-        const robot = bootstrapModuleWithMockRobot(AppModule);
+        bootstrapModule(AppModule)(robot);
 
         expect(() => robot.injector).toBeDefined();
     });
@@ -37,7 +33,7 @@ export default describe('Bootstrapping', () => {
         @HubularModule()
         class AppModule { }
 
-        const robot = bootstrapModuleWithMockRobot(AppModule);
+        bootstrapModule(AppModule)(robot);
 
         expect(robot.injector.get(ROBOT)).toBe(robot);
         expect(robot.injector.get(BRAIN)).toBe(robot.brain);
@@ -63,7 +59,7 @@ export default describe('Bootstrapping', () => {
         })
         class AppModule { }
 
-        const robot = bootstrapModuleWithMockRobot(AppModule);
+        bootstrapModule(AppModule)(robot);
 
         expect(robot.injector.get(FooService)).toBeDefined();
         expect(robot.injector.get(FooService).bar).toBe('foobar');
@@ -92,7 +88,7 @@ export default describe('Bootstrapping', () => {
         })
         class AppModule { }
 
-        const robot = bootstrapModuleWithMockRobot(AppModule);
+        bootstrapModule(AppModule)(robot);
 
         expect(robot.injector.get(ChildModule)).toBeDefined();
         expect(robot.injector.get(valueToken)).toBe(128);
@@ -126,7 +122,7 @@ export default describe('Bootstrapping', () => {
             }
         }
 
-        const robot = bootstrapModuleWithMockRobot(AppModule);
+        bootstrapModule(AppModule)(robot);
 
         expect(robot.brain.get('root')).toBeTruthy();
         expect(robot.brain.get('child')).toBeTruthy();
@@ -137,7 +133,7 @@ export default describe('Bootstrapping', () => {
         // Without @HubularModule()
         class AppModule { }
 
-        expect(() => bootstrapModuleWithMockRobot(AppModule))
+        expect(() => bootstrapModule(AppModule)(robot))
             .toThrowError(`Invalid module [AppModule]. Did you add the @HubularModule decorator?`);
     });
 });
