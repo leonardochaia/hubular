@@ -1,1 +1,2 @@
-export * from './bootstrap_spec';
+export * from './bootstrap.spec';
+export * from './robot-listener-bindings.spec';
