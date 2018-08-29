@@ -1,9 +1,22 @@
 {
   "name": "hubular",
   "version": "0.0.1",
-  "private": true,
   "author": "Leonardo Chaia <lchaia@astonishinglab.com>",
   "description": "A framework for writing Hubot scripts. Inspired on Angular.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leonardochaia/hubular.git"
+  },
+  "bugs": {
+    "url": "https://github.com/leonardochaia/hubular/issues"
+  },
+  "homepage": "https://github.com/leonardochaia/hubular#readme",
+  "keywords": [
+    "Hubot",
+    "dependency injection",
+    "hubot-scripts"
+  ],
+  "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "files": [
