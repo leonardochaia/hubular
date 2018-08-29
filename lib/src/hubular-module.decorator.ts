@@ -1,7 +1,7 @@
 import { Type } from 'injection-js';
 import { HubotModuleConfiguration } from './model';
 
-export const HUBULAR_MODULE_TYPE_CONFIG = 'hubularModuleConfig';
+export const HUBULAR_MODULE_TYPE_CONFIG = 'hubular:moduleConfiguration';
 
 export function HubularModule(config?: HubotModuleConfiguration) {
     return (target: Type<any>) => {

@@ -4,6 +4,9 @@ import { BRAIN, ROBOT } from './injection-tokens';
 import { HubularRobot } from './hubular-robot.model';
 import { HubotModuleConfiguration } from './model';
 import { HUBULAR_MODULE_TYPE_CONFIG } from './hubular-module.decorator';
+import { HUBULAR_TYPE_ROBOT_HEAR } from './robot-hear.decorator';
+import { applyRobotListenerBindings } from './utils/decorators';
+import { HUBULAR_TYPE_ROBOT_RESPOND } from './robot-respond.decorator';
 
 export function bootstrapModule(rootModule: Type<any>) {
     return <TAdapter>(rb: Robot<TAdapter>) => {
@@ -23,7 +26,11 @@ export function bootstrapModule(rootModule: Type<any>) {
 
             try {
                 robot.logger.debug(`Instantiating ${moduleDefinition.name}`);
-                injector.get(moduleDefinition);
+                const instance = injector.get(moduleDefinition);
+
+                robot.logger.debug(`Executing @Robot* bindings ${moduleDefinition.name}`);
+                applyRobotListenerBindings(robot, HUBULAR_TYPE_ROBOT_HEAR, instance);
+                applyRobotListenerBindings(robot, HUBULAR_TYPE_ROBOT_RESPOND, instance);
             } catch (error) {
                 robot.logger.error(`Failed instantiation of module ${moduleDefinition.name}`);
                 throw error;
