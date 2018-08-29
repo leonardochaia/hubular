@@ -1,8 +1,8 @@
-import { HubotModuleTypeConfig } from './model';
 import { ReflectiveInjector, Type, Provider } from 'injection-js';
 import { Robot } from 'hubot';
 import { BRAIN, ROBOT } from './injection-tokens';
 import { HubularRobot } from './hubular-robot.model';
+import { HubotModuleConfiguration } from './model';
 
 export function bootstrapModule(rootModule: Type<any>) {
     return <TAdapter>(rb: Robot<TAdapter>) => {
@@ -25,7 +25,6 @@ export function bootstrapModule(rootModule: Type<any>) {
                 injector.get(moduleDefinition);
             } catch (error) {
                 robot.logger.error(`Failed instantiation of module ${moduleDefinition.name}`);
-                robot.logger.error(error);
                 throw error;
             }
         };
@@ -57,13 +56,14 @@ function createInjectorForModule(
 
     // Get all providers from modules.
     const modules = traverseModules(rootModule);
-    const moduleProviders = modules
-        // Flattern providers.
-        .map(m => m.hubotModuleConfig.providers || [])
-        .reduce((a, b) => [...a, ...b], [])
+    const moduleProviders = [];
 
-        // Add modules to the injector too.
-        .concat(modules);
+    for (const mod of modules) {
+        const modProviders = getModuleTypeConfig(mod).providers || [];
+        modProviders.push(mod);
+
+        moduleProviders.push(modProviders);
+    }
 
     providers = (providers || [])
         .concat(moduleProviders)
@@ -74,7 +74,7 @@ function createInjectorForModule(
 
 function traverseModules(root: Type<any>) {
 
-    const output: HubotModuleTypeConfig[] = [];
+    const output: Type<any>[] = [];
 
     const traverse = (module: Type<any>) => {
         const config = getModuleTypeConfig(module);
@@ -84,7 +84,7 @@ function traverseModules(root: Type<any>) {
             }
         }
 
-        output.push(module as HubotModuleTypeConfig);
+        output.push(module);
     };
 
     traverse(root);
@@ -93,11 +93,12 @@ function traverseModules(root: Type<any>) {
 }
 
 function getModuleTypeConfig(mod: Type<any>) {
-    const configType = mod as HubotModuleTypeConfig;
 
-    if (!configType.hubotModuleConfig) {
+    const config = Reflect.get(mod, 'hubotModuleConfig');
+
+    if (!config) {
         throw new Error(`Invalid module [${mod.name}]. Did you add the @HubotModule decorator?`);
     }
 
-    return configType.hubotModuleConfig;
+    return config as HubotModuleConfiguration;
 }

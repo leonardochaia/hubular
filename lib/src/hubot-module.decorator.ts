@@ -1,10 +1,13 @@
 import { Type } from 'injection-js';
-import { HubotModuleConfiguration, HubotModuleTypeConfig } from './model';
+import { HubotModuleConfiguration } from './model';
 
 export function HubotModule(config?: HubotModuleConfiguration) {
     return (target: Type<any>) => {
 
-        const typeConfig = target as HubotModuleTypeConfig;
-        typeConfig.hubotModuleConfig = config || { providers: [] };
+        config = config || { providers: [] };
+
+        Reflect.set(target, 'hubotModuleConfig', config);
+
+        return target;
     };
 }
