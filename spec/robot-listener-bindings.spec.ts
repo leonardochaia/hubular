@@ -1,5 +1,5 @@
 // tslint:disable:max-classes-per-file
-import 'reflect-metadata';
+
 import { bootstrapModule, HubularModule } from '../lib';
 import { Response, Robot } from 'hubot';
 import { RobotHear } from '../lib/src/robot-hear.decorator';

@@ -1,8 +1,8 @@
 // tslint:disable:max-classes-per-file
-import 'reflect-metadata';
-
-import { bootstrapModule, HubularModule, ROBOT, BRAIN, HubularRobot } from '../lib';
-import { Injector, Injectable, InjectionToken, Inject, Type } from 'injection-js';
+import {
+    bootstrapModule, HubularModule, ROBOT, BRAIN,
+    HubularRobot, Injectable, InjectionToken, Inject
+} from '../lib';
 import { RobotMock } from './robot-mock';
 
 let robotMock: RobotMock;

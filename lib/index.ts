@@ -9,3 +9,5 @@ export { HubularModule } from './src/hubular-module.decorator';
 
 export { RobotHear } from './src/robot-hear.decorator';
 export { RobotRespond } from './src/robot-respond.decorator';
+
+export * from 'injection-js';
