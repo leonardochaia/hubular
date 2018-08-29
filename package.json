@@ -7,10 +7,11 @@
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "files": [
-    "dist"
+    "./dist"
   ],
   "types": "dist/index.d.ts",
   "scripts": {
+    "prepack": "yarn build",
     "commitmsg": "commitlint -E GIT_PARAMS",
     "lint": "tslint -p tsconfig.json",
     "prebuild": "yarn lint",
