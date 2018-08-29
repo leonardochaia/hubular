@@ -22,7 +22,7 @@ export function bootstrapModule(rootModule: Type<any>) {
             }
 
             try {
-                robot.logger.info(`Instantiating ${moduleDefinition.name}`);
+                robot.logger.debug(`Instantiating ${moduleDefinition.name}`);
                 injector.get(moduleDefinition);
             } catch (error) {
                 robot.logger.error(`Failed instantiation of module ${moduleDefinition.name}`);
