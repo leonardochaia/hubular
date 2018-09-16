@@ -7,7 +7,7 @@ import { HubularRobot } from '../core/hubular-robot.model';
 import { HUBULAR_TYPE_ROBOT_CATCH_ALL } from './robot-catch-all.decorator';
 
 export const robotBindingsInitializerProvider: Provider = {
-    deps: [ROBOT],
+    deps: [HubularRobot],
     multi: true,
     provide: MODULE_INITIALIZER,
     useFactory: robotBindingsInitializer,

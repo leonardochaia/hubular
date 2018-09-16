@@ -1,6 +1,6 @@
 import { ReflectiveInjector, Type, Provider } from 'injection-js';
 import { Robot } from 'hubot';
-import { BRAIN, ROBOT, MODULE_INITIALIZER, AFTER_BOOTSTRAP, BEFORE_BOOTSTRAP } from '../core/injection-tokens';
+import { MODULE_INITIALIZER, AFTER_BOOTSTRAP, BEFORE_BOOTSTRAP } from '../core/injection-tokens';
 import { HubularRobot } from '../core/hubular-robot.model';
 import { HubotModuleConfiguration } from './model';
 import { HUBULAR_MODULE_TYPE_CONFIG } from './hubular-module.decorator';
@@ -8,12 +8,10 @@ import { Logger } from '../core/logger';
 import { HubularCoreModule } from '../core/core.module';
 
 export function bootstrapModule(rootModule: Type<any>) {
-    return <TAdapter>(rb: Robot<TAdapter>) => {
-
-        const robot = rb as HubularRobot<TAdapter>;
+    return <TAdapter>(robot: Robot<TAdapter>) => {
 
         const { injector, modules } = createInjectorForRobot(robot, rootModule);
-        robot.injector = injector;
+        (robot as any).injector = injector;
 
         const initializers = injector.get(MODULE_INITIALIZER, []) as ((module?: Type<any>, instance?: any) => void)[];
 
@@ -40,17 +38,13 @@ export function bootstrapModule(rootModule: Type<any>) {
 }
 
 function createInjectorForRobot<TAdapter>(
-    robot: HubularRobot<TAdapter>,
+    robot: Robot<TAdapter>,
     rootModule: Type<any>) {
 
     const providers: Provider[] = [
         {
-            provide: ROBOT,
+            provide: HubularRobot,
             useValue: robot
-        },
-        {
-            provide: BRAIN,
-            useValue: robot.brain
         }
     ];
 

@@ -1,10 +1,14 @@
-import { Robot, Brain } from 'hubot';
-import { Injector } from 'injection-js';
+import { Robot, Brain, Response } from 'hubot';
 import { EventEmitter } from 'events';
+import { Injectable } from 'injection-js';
 
-export interface HubularRobot<TAdapter = any> extends Robot<TAdapter> {
-    injector: Injector;
-    readonly brain: HubularRobotBrain;
+@Injectable()
+export class HubularRobot<TAdapter = any> extends Robot<TAdapter> {
+    public brain: HubularRobotBrain = null as any;
+
+    public catchAll(fn: (res: Response<this>) => void) {
+        return;
+    }
 }
 
 export interface HubularRobotBrain extends Brain, EventEmitter {

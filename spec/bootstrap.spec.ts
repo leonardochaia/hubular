@@ -1,13 +1,13 @@
 // tslint:disable:max-classes-per-file
 import {
-    bootstrapModule, HubularModule, ROBOT, BRAIN,
-    HubularRobot, Injectable, InjectionToken, Inject,
-    MODULE_INITIALIZER, AFTER_BOOTSTRAP
+    bootstrapModule, HubularModule,
+    HubularRobot, Injectable, InjectionToken,
+    MODULE_INITIALIZER, AFTER_BOOTSTRAP, Injector
 } from '../lib';
 import { RobotMock } from './robot-mock';
 
 let robotMock: RobotMock;
-let robot: HubularRobot;
+let robot: HubularRobot & { injector: Injector };
 
 beforeEach(() => {
     robotMock = new RobotMock();
@@ -29,15 +29,14 @@ export default describe('Bootstrapping', () => {
         expect(() => robot.injector).toBeDefined();
     });
 
-    it('should register robot and brain in injector', () => {
+    it('should register HubularRobot in injector', () => {
 
         @HubularModule()
         class AppModule { }
 
         bootstrapModule(AppModule)(robot);
 
-        expect(robot.injector.get(ROBOT)).toBe(robot);
-        expect(robot.injector.get(BRAIN)).toBe(robot.brain);
+        expect(robot.injector.get(HubularRobot)).toBe(robot);
     });
 
     it('should register custom providers in injector', () => {
@@ -101,7 +100,6 @@ export default describe('Bootstrapping', () => {
         class ChildModule {
 
             constructor(
-                @Inject(ROBOT)
                 rb: HubularRobot
             ) {
                 rb.brain.set('child', true);
@@ -116,7 +114,6 @@ export default describe('Bootstrapping', () => {
         class AppModule {
 
             constructor(
-                @Inject(ROBOT)
                 rb: HubularRobot
             ) {
                 rb.brain.set('root', true);

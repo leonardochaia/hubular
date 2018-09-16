@@ -49,18 +49,16 @@ If you are familiar with Angular, this should ring a bell:
 
 ```typescript
 // door.serivce.ts
-import { BRAIN, Injectable, Inject } from 'hubular';
-import { Brain } from 'hubot';
+import { Injectable, Logger } from 'hubular';
 
 @Injectable()
 export class DoorService {
 
-    constructor(
-        @Inject(BRAIN)
-        private brain: Brain) { }
+    constructor(private logger: Logger) { }
 
     public tryOpenThePodBayDoors() {
         // TODO: Open the doors, perhaps store status in brain?
+        this.logger.info('Opening the doors');
         return true;
     }
 }
@@ -75,7 +73,7 @@ import { DoorService } from './door.service';
 
 @HubularModule({
     providers: [
-        // these will be available to all modules
+        // Providers declared in any module can be injected into any module.
         DoorService
     ]
 })
@@ -111,7 +109,9 @@ export class AppModule {
 
     // The AppModule is also resolved using DI
     // although it's only purpose should be to simply import other modules
-    // constructor(private door: DoorService) { }
+    constructor(robot: HubularRobot) {
+        robot.catchAll(res=> res.send('Can\'t help you with that'));
+    }
 }
 
 ```
@@ -153,33 +153,3 @@ yarn start
     ```bash
     bin/hubot --require hubular-scripts
     ```
-
-## Hubular Directory Structure
-
-```text
-|   .gitignore
-|   external-scripts.json
-|   package.json
-|   tsconfig.json
-|   tslint.json
-|   yarn.lock
-+---bin
-|       hubot
-|       hubot.cmd
-+---hubular-scripts
-+---node_modules
-+---scripts
-|       .gitkeep
-\---src
-    |   main.ts
-    \---app
-        |   app.module.ts
-        \---heroes
-                heroes.models.ts
-                heroes.module.ts
-                heroes.service.ts
-```
-
-1. `./src` contains all your Typescript source code. The contents of this folder will get
-    compiled to `./hubular-scripts`.
-1. `./scripts`: You can still use classic Hubot Scripts in Javascript or Coffescript.

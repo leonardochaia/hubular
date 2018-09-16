@@ -13,7 +13,7 @@
     "lib": ["es6"]
   },
   "include": [
-    "../lib/index.ts",
-    "./index.ts"
+    "./index.ts",
+    "../lib/index.ts"
   ]
 }

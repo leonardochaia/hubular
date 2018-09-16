@@ -1,6 +1,5 @@
-import { Injectable, Inject } from 'injection-js';
+import { Injectable } from 'injection-js';
 import { HubularRobot } from '../core/hubular-robot.model';
-import { ROBOT } from '../core/injection-tokens';
 import { Logger } from '../core/logger';
 
 @Injectable()
@@ -17,7 +16,6 @@ export class RobotLogger implements Logger {
     private prefix = '';
 
     constructor(
-        @Inject(ROBOT)
         private robot: HubularRobot) { }
 
     public info(msg: string) {
