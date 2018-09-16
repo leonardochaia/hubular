@@ -32,7 +32,7 @@
     "build": "rimraf dist && rollup -c rollup.config.js",
     "build:test": "rimraf spec/dist && rollup -c rollup.config.js --environment BUILD:test",
     "test": "yarn build:test && jasmine --reporter=\"jasmine-console-reporter\" ",
-    "gen-changelog": "conventional-changelog -i CHANGELOG.md -s",
+    "gen-changelog": "conventional-changelog -i CHANGELOG.md -s -p angular",
     "bump-version": "node bump-version && yarn gen-changelog"
   },
   "bin": "./cli.js",
