@@ -5,12 +5,6 @@ import { EventEmitter } from 'events';
 export interface HubularRobot<TAdapter = any> extends Robot<TAdapter> {
     injector: Injector;
     readonly brain: HubularRobotBrain;
-
-    logger: {
-        debug(msg: string): void;
-        info(msg: string): void;
-        error(msg: string): void;
-    };
 }
 
 export interface HubularRobotBrain extends Brain, EventEmitter {

@@ -1,10 +1,8 @@
 // tslint:disable:max-classes-per-file
 
-import { bootstrapModule, HubularModule } from '../lib';
+import { bootstrapModule, HubularModule, RobotHear, RobotRespond } from '../lib';
 import { Response, Robot } from 'hubot';
-import { RobotHear } from '../lib/src/robot-hear.decorator';
 import { RobotMock } from './robot-mock';
-import { RobotRespond } from '../lib/src/robot-respond.decorator';
 
 let robotMock: RobotMock;
 

@@ -1,42 +1,38 @@
 import { ReflectiveInjector, Type, Provider } from 'injection-js';
 import { Robot } from 'hubot';
-import { BRAIN, ROBOT, MODULE_INITIALIZER, AFTER_BOOTSTRAP } from './injection-tokens';
-import { HubularRobot } from './hubular-robot.model';
+import { BRAIN, ROBOT, MODULE_INITIALIZER, AFTER_BOOTSTRAP, BEFORE_BOOTSTRAP } from '../core/injection-tokens';
+import { HubularRobot } from '../core/hubular-robot.model';
 import { HubotModuleConfiguration } from './model';
 import { HUBULAR_MODULE_TYPE_CONFIG } from './hubular-module.decorator';
-import { robotBindingsInitializerProvider } from './hubular.initializers';
+import { Logger } from '../core/logger';
+import { HubularCoreModule } from '../core/core.module';
 
 export function bootstrapModule(rootModule: Type<any>) {
     return <TAdapter>(rb: Robot<TAdapter>) => {
 
         const robot = rb as HubularRobot<TAdapter>;
-        const injector = createInjectorForRobot(robot, rootModule);
+
+        const { injector, modules } = createInjectorForRobot(robot, rootModule);
         robot.injector = injector;
 
         const initializers = injector.get(MODULE_INITIALIZER, []) as ((module?: Type<any>, instance?: any) => void)[];
 
-        const doBootstrap = (moduleDefinition: Type<any>) => {
+        const beforeBootstrap = injector.get(BEFORE_BOOTSTRAP, []) as (() => void)[];
+        beforeBootstrap.forEach(ab => ab());
 
-            const moduleConfig = getModuleTypeConfig(moduleDefinition);
-            if (moduleConfig.imports && moduleConfig.imports.length) {
-                for (const childModule of moduleConfig.imports) {
-                    doBootstrap(childModule);
-                }
-            }
+        const logger = injector.get(Logger) as Logger;
 
+        // Bootstrap
+        for (const moduleDefinition of modules) {
             try {
-                robot.logger.debug(`Instantiating ${moduleDefinition.name}`);
+                logger.debug(`Instantiating ${moduleDefinition.name}`);
                 const instance = injector.get(moduleDefinition);
-
-                robot.logger.debug(`Executing Initializers for: ${moduleDefinition.name}`);
                 initializers.forEach(initializer => initializer(moduleDefinition, instance));
             } catch (error) {
-                robot.logger.error(`Failed instantiation of module ${moduleDefinition.name}`);
+                logger.error(`Failed instantiation of module ${moduleDefinition.name}`);
                 throw error;
             }
-        };
-
-        doBootstrap(rootModule);
+        }
 
         const afterBootstrap = injector.get(AFTER_BOOTSTRAP, []) as (() => void)[];
         afterBootstrap.forEach(ab => ab());
@@ -47,8 +43,7 @@ function createInjectorForRobot<TAdapter>(
     robot: HubularRobot<TAdapter>,
     rootModule: Type<any>) {
 
-    const providers = [
-        robotBindingsInitializerProvider,
+    const providers: Provider[] = [
         {
             provide: ROBOT,
             useValue: robot
@@ -68,6 +63,7 @@ function createInjectorForModule(
 
     // Get all providers from modules.
     const modules = traverseModules(rootModule);
+    modules.unshift(HubularCoreModule);
     const moduleProviders = [];
 
     for (const mod of modules) {
@@ -81,7 +77,10 @@ function createInjectorForModule(
         .concat(moduleProviders)
         .filter(m => !!m);
 
-    return ReflectiveInjector.resolveAndCreate(providers);
+    return {
+        injector: ReflectiveInjector.resolveAndCreate(providers),
+        modules
+    };
 }
 
 function traverseModules(root: Type<any>) {
