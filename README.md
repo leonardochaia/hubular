@@ -97,8 +97,9 @@ export class DoorModule {
 
 ```typescript
 // app.module.ts
-import { HubularModule } from 'hubular';
+import { HubularModule, RobotCatchAll, HubularRobot } from 'hubular';
 import { HeroesModule } from './heroes/heroes.module';
+import { Response } from 'hubot';
 
 @HubularModule({
     imports: [
@@ -109,8 +110,11 @@ export class AppModule {
 
     // The AppModule is also resolved using DI
     // although it's only purpose should be to simply import other modules
-    constructor(robot: HubularRobot) {
-        robot.catchAll(res=> res.send('Can\'t help you with that'));
+    //constructor(robot: HubularRobot) {}
+
+    @RobotCatchAll()
+    protected onCatchAll(res: Response<HubularRobot>) {
+        res.send('Sorry, can\'t help you with that.');
     }
 }
 
