@@ -4,9 +4,7 @@ import { BRAIN, ROBOT, MODULE_INITIALIZER, AFTER_BOOTSTRAP } from './injection-t
 import { HubularRobot } from './hubular-robot.model';
 import { HubotModuleConfiguration } from './model';
 import { HUBULAR_MODULE_TYPE_CONFIG } from './hubular-module.decorator';
-import { HUBULAR_TYPE_ROBOT_HEAR } from './robot-hear.decorator';
-import { applyRobotListenerBindings } from './utils/decorators';
-import { HUBULAR_TYPE_ROBOT_RESPOND } from './robot-respond.decorator';
+import { robotBindingsInitializerProvider } from './hubular.initializers';
 
 export function bootstrapModule(rootModule: Type<any>) {
     return <TAdapter>(rb: Robot<TAdapter>) => {
@@ -32,11 +30,6 @@ export function bootstrapModule(rootModule: Type<any>) {
 
                 robot.logger.debug(`Executing Initializers for: ${moduleDefinition.name}`);
                 initializers.forEach(initializer => initializer(moduleDefinition, instance));
-
-                // TODO: Move to module initializer
-                robot.logger.debug(`Executing @Robot* bindings ${moduleDefinition.name}`);
-                applyRobotListenerBindings(robot, HUBULAR_TYPE_ROBOT_HEAR, instance);
-                applyRobotListenerBindings(robot, HUBULAR_TYPE_ROBOT_RESPOND, instance);
             } catch (error) {
                 robot.logger.error(`Failed instantiation of module ${moduleDefinition.name}`);
                 throw error;
@@ -54,14 +47,16 @@ function createInjectorForRobot<TAdapter>(
     robot: HubularRobot<TAdapter>,
     rootModule: Type<any>) {
 
-    const providers = [{
-        provide: ROBOT,
-        useValue: robot
-    },
-    {
-        provide: BRAIN,
-        useValue: robot.brain
-    }
+    const providers = [
+        robotBindingsInitializerProvider,
+        {
+            provide: ROBOT,
+            useValue: robot
+        },
+        {
+            provide: BRAIN,
+            useValue: robot.brain
+        }
     ];
 
     return createInjectorForModule(rootModule, providers);
