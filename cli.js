@@ -2,6 +2,8 @@
 
 'use strict'
 
+require('dotenv').config();
+
 const argv = require('yargs').argv
 
 let hubular;
