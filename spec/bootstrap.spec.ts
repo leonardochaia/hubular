@@ -1,7 +1,8 @@
 // tslint:disable:max-classes-per-file
 import {
     bootstrapModule, HubularModule, ROBOT, BRAIN,
-    HubularRobot, Injectable, InjectionToken, Inject
+    HubularRobot, Injectable, InjectionToken, Inject,
+    MODULE_INITIALIZER, AFTER_BOOTSTRAP
 } from '../lib';
 import { RobotMock } from './robot-mock';
 
@@ -135,5 +136,53 @@ export default describe('Bootstrapping', () => {
 
         expect(() => bootstrapModule(AppModule)(robot))
             .toThrowError(`Invalid module [AppModule]. Did you add the @HubularModule decorator?`);
+    });
+
+    it('should execute MODULE_INITIALIZER when bootstrapping', () => {
+
+        const spy = jasmine.createSpy('initializer');
+        function initializeModule() {
+            return spy;
+        }
+
+        @HubularModule({
+            providers: [
+                {
+                    deps: [],
+                    multi: true,
+                    provide: MODULE_INITIALIZER,
+                    useFactory: initializeModule,
+                }
+            ]
+        })
+        class AppModule { }
+
+        bootstrapModule(AppModule)(robot);
+
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should execute AFTER_BOOTSTRAP', () => {
+
+        const spy = jasmine.createSpy('initializer');
+        function afterBootstrap() {
+            return spy;
+        }
+
+        @HubularModule({
+            providers: [
+                {
+                    deps: [],
+                    multi: true,
+                    provide: AFTER_BOOTSTRAP,
+                    useFactory: afterBootstrap,
+                }
+            ]
+        })
+        class AppModule { }
+
+        bootstrapModule(AppModule)(robot);
+
+        expect(spy).toHaveBeenCalled();
     });
 });

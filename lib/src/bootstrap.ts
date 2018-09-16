@@ -1,6 +1,6 @@
 import { ReflectiveInjector, Type, Provider } from 'injection-js';
 import { Robot } from 'hubot';
-import { BRAIN, ROBOT } from './injection-tokens';
+import { BRAIN, ROBOT, MODULE_INITIALIZER, AFTER_BOOTSTRAP } from './injection-tokens';
 import { HubularRobot } from './hubular-robot.model';
 import { HubotModuleConfiguration } from './model';
 import { HUBULAR_MODULE_TYPE_CONFIG } from './hubular-module.decorator';
@@ -15,6 +15,8 @@ export function bootstrapModule(rootModule: Type<any>) {
         const injector = createInjectorForRobot(robot, rootModule);
         robot.injector = injector;
 
+        const initializers = injector.get(MODULE_INITIALIZER, []) as ((module?: Type<any>, instance?: any) => void)[];
+
         const doBootstrap = (moduleDefinition: Type<any>) => {
 
             const moduleConfig = getModuleTypeConfig(moduleDefinition);
@@ -28,6 +30,10 @@ export function bootstrapModule(rootModule: Type<any>) {
                 robot.logger.debug(`Instantiating ${moduleDefinition.name}`);
                 const instance = injector.get(moduleDefinition);
 
+                robot.logger.debug(`Executing Initializers for: ${moduleDefinition.name}`);
+                initializers.forEach(initializer => initializer(moduleDefinition, instance));
+
+                // TODO: Move to module initializer
                 robot.logger.debug(`Executing @Robot* bindings ${moduleDefinition.name}`);
                 applyRobotListenerBindings(robot, HUBULAR_TYPE_ROBOT_HEAR, instance);
                 applyRobotListenerBindings(robot, HUBULAR_TYPE_ROBOT_RESPOND, instance);
@@ -38,6 +44,9 @@ export function bootstrapModule(rootModule: Type<any>) {
         };
 
         doBootstrap(rootModule);
+
+        const afterBootstrap = injector.get(AFTER_BOOTSTRAP, []) as (() => void)[];
+        afterBootstrap.forEach(ab => ab());
     };
 }
 
