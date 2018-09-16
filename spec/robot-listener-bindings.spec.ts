@@ -1,6 +1,10 @@
 // tslint:disable:max-classes-per-file
 
-import { bootstrapModule, HubularModule, RobotHear, RobotRespond } from '../lib';
+import {
+    bootstrapModule, HubularModule,
+    RobotHear, RobotRespond,
+    RobotCatchAll
+} from '../lib';
 import { Response, Robot } from 'hubot';
 import { RobotMock } from './robot-mock';
 
@@ -54,6 +58,29 @@ export default describe('Robot Bindings', () => {
 
         return robotMock
             .sendMessage('hubot ping')
+            .onSend((envelop, msgs) => {
+                const answer = msgs[0];
+
+                expect(answer).toEqual(expected);
+            });
+    });
+
+    it('@RobotCatchAll should bind to robot.catchAll()', () => {
+
+        const expected = 'pong';
+        @HubularModule()
+        class AppModule {
+
+            @RobotCatchAll()
+            protected onCatchAll(res: Response<Robot<any>>) {
+                res.send(expected);
+            }
+        }
+
+        bootstrapModule(AppModule)(robotMock.robot);
+
+        return robotMock
+            .sendMessage('hubot whatever')
             .onSend((envelop, msgs) => {
                 const answer = msgs[0];
 
